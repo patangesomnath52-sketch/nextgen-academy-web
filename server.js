@@ -79,7 +79,60 @@ const StudentSchema = new mongoose.Schema({
     signature: String,      // URL path to signature
     regDate: { type: Date, default: Date.now }
 });
+// --- 4.5 Website Content Schema (CMS) ---
+const ContentSchema = new mongoose.Schema({
+    heroTitle: { type: String, default: 'DOMINATE THE PITCH.' },
+    heroDesc: { type: String, default: 'State-of-the-art facilities and professional coaching based in Baner & Mahalunge, Pune. Your legacy starts here.' },
+    coach1Name: { type: String, default: 'PRAVIN KALYANKAR' },
+    coach1Bio: { type: String, default: 'Specializing in elite strength and conditioning. Architect of the NextGen performance culture.' },
+    coach2Name: { type: String, default: 'ABHIJEET JOGDAND' },
+    coach2Bio: { type: String, default: 'Master of functional fitness, mobility, and technical refinement. Maximizing athletic output on the field.' },
+    payPlayTitle: { type: String, default: 'LOCKED OUT? GET IN THE NETS.' },
+    payPlayDetails: { type: String, default: 'Exclusive Pay & Play access now open at our Mahalunge facility. Standard nets or Sidearm Specialists available.' },
+    payPlayPhone: { type: String, default: '919325786808' }
+});
 
+const Content = mongoose.model('Content', ContentSchema);
+
+// Auto-initialize default content if the database is empty
+async function initCMS() {
+    const count = await Content.countDocuments();
+    if (count === 0) {
+        await new Content({}).save();
+        console.log("📝 Initialized default CMS content in database.");
+    }
+}
+initCMS();
+
+// --- CMS ROUTES ---
+
+// GET: Fetch current website content (Public)
+app.get('/api/content', async (req, res) => {
+    try {
+        const content = await Content.findOne();
+        res.status(200).json(content);
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// PUT: Update website content (Admin Only)
+app.put('/api/content', async (req, res) => {
+    try {
+        if (req.headers['x-admin-key'] !== 'nextgen123') {
+            return res.status(403).json({ success: false, message: "Access Denied" });
+        }
+        
+        const content = await Content.findOne();
+        Object.assign(content, req.body); // Overwrite old text with new text
+        await content.save();
+        
+        res.status(200).json({ success: true, message: "Site Updated!" });
+    } catch (err) {
+        console.error("CMS Error:", err);
+        res.status(500).json({ success: false });
+    }
+});
 const Student = mongoose.model('Student', StudentSchema);
 
 // --- 5. Routes ---

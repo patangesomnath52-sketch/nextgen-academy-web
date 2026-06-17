@@ -435,9 +435,9 @@
   <section id="home" class="section active">
     <div class="container hero-content">
       <div class="hero-tag">ELITE CRICKET DEVELOPMENT</div>
-      <h1 class="text-outline">DOMINATE</h1>
+      <h1 class="text-outline" id="site-hero-title">DOMINATE</h1>
       <h1>THE PITCH.</h1>
-      <p style="font-size: 1.3rem; margin-bottom: 40px; color: #ddd; max-width: 600px;">
+      <p style="font-size: 1.3rem; margin-bottom: 40px; color: #ddd; max-width: 600px;" id="site-hero-desc">
         State-of-the-art facilities and professional coaching based in Baner & Mahalunge, Pune. Your legacy starts here.
       </p>
      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -458,16 +458,16 @@
       <div class="sports-grid">
         <div class="sports-card coach-card">
           <img src="" class="coach-image" alt="">
-          <h3></h3>
+          <h3 id="site-coach1-name"></h3>
           <div class="coach-role">HEAD COACH & FOUNDER</div>
-          <p>Specializing in elite strength and conditioning. Architect of the NextGen performance culture.</p>
+          <p id="site-coach1-bio">Specializing in elite strength and conditioning. Architect of the NextGen performance culture.</p>
         </div>
         
         <div class="sports-card coach-card">
-          <img src="" class="coach-image" alt="">
-          <h3></h3>
+          <img src="" class="coach-image"  alt="">
+          <h3 id="site-coach2-name"></h3>
           <div class="coach-role">ASSISTANT COACH</div>
-          <p>Master of functional fitness, mobility, and technical refinement. Maximizing athletic output on the field.</p>
+          <p id="site-coach2-bio">Master of functional fitness, mobility, and technical refinement. Maximizing athletic output on the field.</p>
         </div>
       </div>
     </div>
@@ -476,7 +476,7 @@
   <!-- PROGRAMS & PAY/PLAY -->
   <section id="programs" class="section">
     <div class="container">
-      <h2>ELITE <span class="text-volt">PATHWAYS</span></h2>
+      <h2 >ELITE <span class="text-volt">PATHWAYS</span></h2>
       <div class="sports-grid">
         <div class="sports-card">
           <h1 style="color: var(--light-grey); position:absolute; top:-20px; right: 10px; font-size: 8rem; z-index:0;">01</h1>
@@ -518,9 +518,9 @@
       <!-- Hype Banner for Pay & Play -->
       <div class="hype-banner">
         <div class="marquee">NEXTGEN CRICKET OPEN NETS NEXTGEN CRICKET OPEN NETS</div>
-        <h2 style="position:relative; z-index:2;">LOCKED OUT? <span style="color:#fff;">GET IN THE NETS.</span></h2>
-        <p style="position:relative; z-index:2;">Exclusive Pay & Play access now open at our Mahalunge facility. Standard nets or Sidearm Specialists available.</p>
-        <a href="https://wa.me/?text=Hi%2C%20I%20would%20like%20to%20book%20a%20practice%20session" target="_blank" class="btn" style="background:#000; color:var(--volt); position:relative; z-index:2;">SECURE YOUR SLOT</a>
+        <h2 style="position:relative; z-index:2;" id="site-payplay-title">LOCKED OUT? <span style="color:#fff;">GET IN THE NETS.</span></h2>
+        <p style="position:relative; z-index:2;" id="site-payplay-details">Exclusive Pay & Play access now open at our Mahalunge facility. Standard nets or Sidearm Specialists available.</p>
+        <a href="https://wa.me/?text=Hi%2C%20I%20would%20like%20to%20book%20a%20practice%20session" target="_blank" class="btn" style="background:#000; color:var(--volt); position:relative; z-index:2;" id="site-payplay-btn">SECURE YOUR SLOT</a>
       </div>
     </div>
   </section>
@@ -657,6 +657,31 @@
               document.getElementById('navLinks').classList.remove('active');
             }
           }
+          // --- FETCH LIVE CMS DATA FROM SERVER ---
+      fetch('http://localhost:5000/api/content')
+        .then(response => response.json())
+        .then(data => {
+            if(data) {
+                // Safely update DOM if the elements exist
+                const setEl = (id, text) => { if(document.getElementById(id)) document.getElementById(id).innerText = text; };
+                
+                setEl('site-hero-title', data.heroTitle);
+                setEl('site-hero-desc', data.heroDesc);
+                setEl('site-coach1-name', data.coach1Name);
+                setEl('site-coach1-bio', data.coach1Bio);
+                setEl('site-coach2-name', data.coach2Name);
+                setEl('site-coach2-bio', data.coach2Bio);
+                setEl('site-payplay-title', data.payPlayTitle);
+                setEl('site-payplay-details', data.payPlayDetails);
+                
+                // Update WhatsApp link for Pay & Play dynamically
+                const payPlayBtn = document.getElementById('site-payplay-btn');
+                if(payPlayBtn && data.payPlayPhone) {
+                    payPlayBtn.href = `https://wa.me/${data.payPlayPhone}?text=Hi,%20I%20would%20like%20to%20book%20a%20practice%20session`;
+                }
+            }
+        })
+        .catch(err => console.error("CMS Load Error:", err));
         });
       });
 

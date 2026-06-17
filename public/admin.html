@@ -384,26 +384,58 @@
     }
 
     // --- CMS Save Simulation (Site Editor) ---
-    function saveWebsiteChanges() {
+    // --- REAL DATABASE CONNECTION: Update Website Content ---
+    async function saveWebsiteChanges() {
       const saveBtn = document.querySelector('#cms .btn-save');
       const originalText = saveBtn.innerHTML;
       
       saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PUBLISHING...';
       saveBtn.disabled = true;
 
-      // Currently simulated. Will need a PUT route in server.js to make real.
-      setTimeout(() => {
+      // 1. Gather all the text from the admin inputs
+      const updatedData = {
+        heroTitle: document.getElementById('edit-hero-title').value,
+        heroDesc: document.getElementById('edit-hero-desc').value,
+        coach1Name: document.getElementById('edit-coach1-name').value,
+        coach1Bio: document.getElementById('edit-coach1-bio').value,
+        coach2Name: document.getElementById('edit-coach2-name').value,
+        coach2Bio: document.getElementById('edit-coach2-bio').value,
+        payPlayTitle: document.getElementById('edit-payplay-title').value,
+        payPlayDetails: document.getElementById('edit-payplay-details').value,
+        payPlayPhone: document.getElementById('edit-payplay-number').value
+      };
+
+      try {
+        // 2. Send the new text to the backend securely
+        const response = await fetch('http://localhost:5000/api/content', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': 'nextgen123'
+          },
+          body: JSON.stringify(updatedData)
+        });
+
+        if (!response.ok) throw new Error('Failed to update site');
+
+        // 3. Success UI
         saveBtn.innerHTML = '<i class="fas fa-check"></i> PUBLISHED SUCCESSFULLY';
         saveBtn.style.background = 'var(--volt)';
         saveBtn.style.color = 'var(--dark)';
         
+      } catch (error) {
+        console.error("Publish Error:", error);
+        saveBtn.innerHTML = '<i class="fas fa-times"></i> ERROR PUBLISHING';
+        saveBtn.style.background = 'var(--danger)';
+      } finally {
+        // Reset button after 3 seconds
         setTimeout(() => {
           saveBtn.innerHTML = originalText;
           saveBtn.style.background = 'transparent';
           saveBtn.style.color = 'var(--volt)';
           saveBtn.disabled = false;
         }, 3000);
-      }, 1500);
+      }
     }
   </script>
 </body>
