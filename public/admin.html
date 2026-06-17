@@ -335,54 +335,76 @@
     });
 
     // --- REAL DATABASE CONNECTION: Fetch Roster ---
-    async function fetchRoster() {
-      const tbody = document.getElementById('roster-table-body');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Intercepting database signals...</td></tr>';
 
-      try {
-        // Fetching from your server.js route with the security key
-        const response = await fetch('http://localhost:5000/api/students', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-admin-key': 'nextgen123' // The security lock we built
-          }
-        });
 
-        if (!response.ok) throw new Error('Database connection failed');
-        
-        const players = await response.json();
-        tbody.innerHTML = ''; // Clear the loading text
+async function fetchRoster() {
+  const tbody = document.getElementById('roster-table-body');
+  
+  try {
+    const response = await fetch('http://localhost:5000/api/students', {
+      headers: { 'x-admin-key': 'nextgen123' }
+    });
+    
+    const players = await response.json();
+    tbody.innerHTML = ''; // Clear current rows
 
-        if (players.length === 0) {
-           tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No players currently drafted.</td></tr>';
-           return;
-        }
+    players.forEach(player => {
+      // These keys (player.fullName, etc.) must match your Schema in server.js
+      const row = `
+        <tr>
+          <td>${player.studentId}</td>
+          <td style="font-weight:bold;">${player.fullName}</td>
+          <td style="color:var(--volt);">${player.role}</td>
+          <td>${player.phone}</td>
+          <td><span class="status-badge">ACTIVE</span></td>
+          <td>
+            <!-- Click to view uploaded file -->
+            <a href="http://localhost:5000${player.photo}" target="_blank" class="btn-save">
+              <i class="fas fa-eye"></i>
+            </a>
+          </td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  } catch (error) {
+    console.error("Fetch Error:", error);
+  }
+}async function fetchRoster() {
+  const tbody = document.getElementById('roster-table-body');
+  
+  try {
+    const response = await fetch('http://localhost:5000/api/students', {
+      headers: { 'x-admin-key': 'nextgen123' }
+    });
+    
+    const players = await response.json();
+    tbody.innerHTML = ''; // Clear current rows
 
-        // Loop through the database records and inject them into the HTML
-        players.forEach(player => {
-          const row = `
-            <tr>
-              <td>${player.studentId || 'N/A'}</td>
-              <td style="font-weight:bold;">${player.fullName}</td>
-              <td style="color:var(--volt);">${player.role}</td>
-              <td>${player.phone}</td>
-              <td><span class="status-badge">ACTIVE</span></td>
-              <td>
-                <a href="http://localhost:5000${player.photo}" target="_blank" class="btn-save" style="padding: 5px 10px; font-size: 0.8rem;">
-                  <i class="fas fa-eye"></i> INTEL
-                </a>
-              </td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-
-      } catch (error) {
-        console.error("Roster Fetch Error:", error);
-        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--danger); text-align:center;">Failed to connect to the central server.</td></tr>`;
-      }
-    }
+    players.forEach(player => {
+      // These keys (player.fullName, etc.) must match your Schema in server.js
+      const row = `
+        <tr>
+          <td>${player.studentId}</td>
+          <td style="font-weight:bold;">${player.fullName}</td>
+          <td style="color:var(--volt);">${player.role}</td>
+          <td>${player.phone}</td>
+          <td><span class="status-badge">ACTIVE</span></td>
+          <td>
+            <!-- Click to view uploaded file -->
+            <a href="http://localhost:5000${player.photo}" target="_blank" class="btn-save">
+              <i class="fas fa-eye"></i>
+            </a>
+          </td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  } catch (error) {
+    console.error("Fetch Error:", error);
+  }
+}
+    
 
     // --- CMS Save Simulation (Site Editor) ---
     // --- REAL DATABASE CONNECTION: Update Website Content ---
