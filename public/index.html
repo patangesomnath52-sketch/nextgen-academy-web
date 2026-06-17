@@ -355,14 +355,38 @@
       #wa-panel { width: calc(100vw - 40px); right: 20px; }
     }
 
-    /* Print Setup */
     @media print {
-      body * { visibility: hidden; }
-      .printable-submission, .printable-submission * { visibility: visible; }
-      .printable-submission { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 40px; }
-      nav, footer, #wa-launcher, .btn { display: none !important; }
+    /* 1. Hide everything on the page */
+    body * {
+        visibility: hidden;
     }
-    .printable-submission { display: none; background: white; color: black; max-width: 800px; margin: 0 auto; border: 2px solid black; position: relative;}
+
+    /* 2. Show ONLY the print area */
+    #printable-submission, #printable-submission * {
+        visibility: visible;
+        display: block !important; /* Forces visibility */
+    }
+
+    /* 3. Position the print template at the top left */
+    #printable-submission {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+        padding: 40px;
+        border: 2px solid #000;
+        /* Ensure it isn't transparent */
+        opacity: 1 !important;
+    }
+
+    /* 4. Ensure images (photos/signatures) are forced to render */
+    #printable-submission img {
+        display: block !important;
+        max-width: 100% !important;
+    }
+}
     #copy {
   text-align: center;
   display: flex;
@@ -864,6 +888,35 @@
       // Initialize default view
       showSection('home');
     });
+    window.generatePrint = function() {
+    // 1. Populate the data
+    const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : 'N/A'; };
+    const printDetails = document.getElementById('print-details');
+    
+    // Ensure the print div is accessible
+    const printArea = document.getElementById('printable-submission');
+    if (printArea) {
+        printArea.style.display = 'block'; // Force block display before printing
+        
+        // Populate fields
+        document.getElementById('p-name').textContent = getVal('fullName');
+        document.getElementById('p-dob').textContent = getVal('dob');
+        document.getElementById('p-role').textContent = getVal('role');
+        document.getElementById('p-bat').textContent = getVal('batting');
+        document.getElementById('p-phone').textContent = getVal('phone');
+        document.getElementById('p-emerg').textContent = getVal('emergency');
+        
+        document.getElementById('print-photo').src = document.getElementById('preview-photo').src;
+        document.getElementById('print-sig').src = document.getElementById('preview-sig').src;
+
+        // 2. Trigger print with a tiny delay to let the browser render the DOM
+        setTimeout(() => {
+            window.print();
+        }, 500); 
+    } else {
+        alert("Print template not found!");
+    }
+};
   </script>
 </body>
 </html>

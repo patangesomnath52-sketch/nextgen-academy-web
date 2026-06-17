@@ -15,7 +15,15 @@
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "mongoose": "^9.2.1",
-    "multer": "^2.0.2"
-  }
+    "mongoose": "^9.7.0",
+    "multer": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patangesomnath52-sketch/nextgen-academy-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/patangesomnath52-sketch/nextgen-academy-web/issues"
+  },
+  "homepage": "https://github.com/patangesomnath52-sketch/nextgen-academy-web#readme"
 }

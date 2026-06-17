@@ -128,17 +128,33 @@
     }
 
     /* --- Print Styles --- */
-    @media print {
-      body * { visibility: hidden; }
-      #print-area, #print-area * { visibility: visible; }
-      #print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 40px; font-family: 'Inter', sans-serif; }
-      .print-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-      .print-header h1 { font-family: 'Oswald'; font-size: 40px; margin: 0; }
-      .print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-      .print-label { font-size: 12px; font-weight: bold; color: #555; text-transform: uppercase; }
-      .print-val { font-size: 18px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-      .stamp { position: absolute; bottom: 40px; right: 40px; border: 4px solid #cc0000; color: #cc0000; padding: 20px; font-family: 'Oswald'; text-align: center; transform: rotate(-15deg); font-size: 24px; font-weight: bold; }
+ @media print {
+    /* Hide everything on the page */
+    body * { visibility: hidden !important; }
+
+    /* Show ONLY the print area */
+    #printable-submission, #printable-submission * {
+        visibility: visible !important;
+        display: block !important;
     }
+
+    /* Force the print area to the top */
+    #printable-submission {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+        padding: 40px;
+    }
+}
+    /* 4. Ensure images (photos/signatures) are forced to render */
+    #printable-submission img {
+        display: block !important;
+        max-width: 100% !important;
+    }
+
   </style>
 </head>
 
@@ -308,28 +324,31 @@
   </div>
 
   <!-- Hidden Print Area -->
-  <div id="print-area" style="display:none;">
-    <div class="print-header">
-      <h1>NEXTGEN ACADEMY</h1>
-      <p style="margin:5px 0 0; font-weight:bold; letter-spacing: 2px;">OFFICIAL PLAYER DOSSIER</p>
+  <div id="printable-submission" style="display:none; font-family: 'Oswald', sans-serif;">
+    <div style="border-bottom: 3px solid #000; margin-bottom: 20px; padding-bottom: 10px;">
+        <h2 style="margin:0; font-size: 24px;">NEXTGEN ACADEMY</h2>
+        <p style="font-size: 12px; letter-spacing: 2px;">OFFICIAL PLAYER DOSSIER</p>
     </div>
-    <div style="text-align:center; margin-bottom:30px;">
-      <img id="print-photo" src="" style="width:150px; height:150px; object-fit:cover; border:4px solid #000;">
+    
+    <div style="display:flex; gap: 20px;">
+        <img id="print-photo" src="" style="width: 100px; height: 120px; object-fit:cover; border: 2px solid #000;">
+        <div style="font-size: 14px;">
+            <div style="margin-bottom:8px;"><strong>NAME:</strong> <span id="p-name"></span></div>
+            <div style="margin-bottom:8px;"><strong>DOB:</strong> <span id="p-dob"></span></div>
+            <div style="margin-bottom:8px;"><strong>ROLE:</strong> <span id="p-role"></span></div>
+            <div style="margin-bottom:8px;"><strong>STANCE:</strong> <span id="p-bat"></span></div>
+        </div>
     </div>
-    <div class="print-grid">
-      <div><div class="print-label">Player Name</div><div class="print-val" id="p-name"></div></div>
-      <div><div class="print-label">Date of Birth</div><div class="print-val" id="p-dob"></div></div>
-      <div><div class="print-label">Primary Role</div><div class="print-val" id="p-role"></div></div>
-      <div><div class="print-label">Batting Style</div><div class="print-val" id="p-bat"></div></div>
-      <div><div class="print-label">Contact Number</div><div class="print-val" id="p-phone"></div></div>
-      <div><div class="print-label">Emergency Contact</div><div class="print-val" id="p-emerg"></div></div>
+
+    <div style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px;">
+        <div style="font-size: 12px; margin-bottom: 5px;">DIGITAL SIGNATURE</div>
+        <img id="print-sig" src="" style="height: 40px; width: 150px; object-fit: contain;">
     </div>
-    <div style="margin-top: 50px; text-align:center;">
-      <div class="print-label" style="margin-bottom:10px;">Digital Signature</div>
-      <img id="print-sig" src="" style="max-height:80px; border-bottom:2px solid #000; padding-bottom:5px;">
+
+    <div style="margin-top: 20px; text-align: center; font-size: 10px; color: #666;">
+        THIS DOSSIER IS AN OFFICIAL ACADEMY DOCUMENT. PUNE, INDIA.
     </div>
-    <div class="stamp">ACADEMY<br>APPROVED</div>
-  </div>
+</div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -479,29 +498,28 @@
       setupUploadZone('drop-photo', 'input-photo', 'preview-wrap-photo', 'preview-photo', 'remove-photo');
       setupUploadZone('drop-sig', 'input-sig', 'preview-wrap-sig', 'preview-sig', 'remove-sig');
 
-      // --- Summary and Print Population ---
-      function populateSummary() {
-        const val = id => document.getElementById(id).value;
-        
-        // UI Summary
-        document.getElementById('sum-name').textContent = val('fullName');
-        document.getElementById('sum-role').textContent = val('role');
-        document.getElementById('sum-phone').textContent = val('phone');
-        document.getElementById('sum-exp').textContent = val('experience') + " Yrs";
+      window.generatePrint = function() {
+    const getVal = (id) => document.getElementById(id).value || 'N/A';
+    
+    // Set Text Content
+    document.getElementById('p-name').textContent = getVal('fullName');
+    document.getElementById('p-dob').textContent = getVal('dob');
+    document.getElementById('p-role').textContent = getVal('role');
+    document.getElementById('p-bat').textContent = getVal('batting');
+    
+    // Set Images
+    document.getElementById('print-photo').src = document.getElementById('preview-photo').src;
+    document.getElementById('print-sig').src = document.getElementById('preview-sig').src;
 
-        // Print Template
-        document.getElementById('p-name').textContent = val('fullName');
-        document.getElementById('p-dob').textContent = val('dob');
-        document.getElementById('p-role').textContent = val('role');
-        document.getElementById('p-bat').textContent = val('batting');
-        document.getElementById('p-phone').textContent = val('phone');
-        document.getElementById('p-emerg').textContent = val('emergency');
-        
-        document.getElementById('print-photo').src = document.getElementById('preview-photo').src;
-        document.getElementById('print-sig').src = document.getElementById('preview-sig').src;
-      }
-
-    });
+    // Reveal and Print
+    document.getElementById('printable-submission').style.display = 'block';
+    
+    setTimeout(() => {
+        window.print();
+        // Hide it again after printing
+        document.getElementById('printable-submission').style.display = 'none';
+    }, 500);
+};})
   </script>
 </body>
 </html>
