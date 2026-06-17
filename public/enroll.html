@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextGen Academy | The Draft (Enrollment)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --volt: #ccff00;
+      --dark: #050505;
+      --grey: #141414;
+      --light-grey: #2a2a2a;
+      --text: #ffffff;
+      --text-muted: #888888;
+      --danger: #ff3333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    h1, h2, h3, .btn, .step-title, label { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+
+    /* --- Navigation --- */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 100; pointer-events: none;
+    }
+    .back-link {
+      pointer-events: auto; color: var(--text); text-decoration: none; font-family: 'Oswald';
+      font-size: 1.2rem; display: flex; align-items: center; gap: 10px; transition: color 0.3s;
+    }
+    .back-link:hover { color: var(--volt); }
+    .logo { font-family: 'Oswald'; font-size: 24px; font-weight: 700; color: var(--text); }
+    .logo span { color: var(--volt); }
+
+    /* --- Split Layout --- */
+    .split-layout { display: flex; min-height: 100vh; }
+    
+    /* Left: Visual/Hype Side */
+    .hype-panel {
+      flex: 1; background: url('https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?q=80&w=2070&auto=format&fit=crop') center/cover;
+      position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 60px;
+    }
+    .hype-panel::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(0deg, rgba(5,5,5,1) 0%, rgba(5,5,5,0.4) 100%);
+    }
+    .hype-content { position: relative; z-index: 2; }
+    .hype-tag { display: inline-block; background: var(--volt); color: var(--dark); padding: 5px 15px; font-family: 'Oswald'; font-weight: 700; margin-bottom: 20px; letter-spacing: 2px; }
+    .hype-content h1 { font-size: clamp(3rem, 5vw, 5rem); line-height: 1; margin-bottom: 20px; }
+    .hype-content p { color: #ccc; font-size: 1.2rem; max-width: 500px; line-height: 1.6; }
+
+    /* Right: Form Side */
+    .form-panel {
+      flex: 1.2; background: var(--dark); display: flex; justify-content: center; align-items: center;
+      padding: 100px 60px 60px; position: relative;
+    }
+    .form-container { width: 100%; max-width: 700px; }
+
+    /* --- Progress Header --- */
+    .form-header { margin-bottom: 40px; }
+    .progress-wrapper { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+    .progress-bar { flex: 1; height: 6px; background: var(--light-grey); position: relative; overflow: hidden; }
+    .progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 25%; background: var(--volt); transition: width 0.4s ease; }
+    .step-counter { font-family: 'Oswald'; color: var(--volt); font-size: 1.2rem; }
+    .step-title { font-size: 2rem; color: var(--text); }
+
+    /* --- Advanced Form Styles --- */
+    .form-step { display: none; animation: slideUp 0.4s ease forwards; }
+    .form-step.active { display: block; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .form-row { display: flex; gap: 20px; margin-bottom: 25px; }
+    .form-group { flex: 1; }
+    .form-group.full { flex: 0 0 100%; }
+
+    label { display: block; margin-bottom: 8px; font-size: 1.1rem; letter-spacing: 1px; color: var(--text-muted); }
+    .form-input {
+      width: 100%; padding: 18px 20px; background: var(--grey); border: 2px solid var(--light-grey);
+      color: var(--text); font-family: 'Inter'; font-size: 1.1rem; transition: all 0.3s;
+    }
+    .form-input:focus { outline: none; border-color: var(--volt); background: #1a1a1a; box-shadow: 0 0 15px rgba(204, 255, 0, 0.1); }
+    .input-error { border-color: var(--danger) !important; animation: shake 0.4s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    /* --- File Upload Zones (Drag & Drop) --- */
+    .upload-zone {
+      border: 2px dashed var(--light-grey); padding: 40px 20px; text-align: center;
+      background: var(--grey); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+    }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--volt); background: rgba(204,255,0,0.05); }
+    .upload-zone i { font-size: 40px; color: var(--volt); margin-bottom: 15px; }
+    .upload-zone .upload-text { font-family: 'Oswald'; font-size: 1.2rem; color: var(--text); margin-bottom: 5px; }
+    .upload-zone .upload-sub { font-size: 0.9rem; color: var(--text-muted); }
+    .preview-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); display: none; align-items: center; justify-content: center; padding: 10px; }
+    .preview-img { max-width: 100%; max-height: 100%; object-fit: contain; border: 2px solid var(--volt); }
+    .remove-file { position: absolute; top: 10px; right: 10px; background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: none; z-index: 10; }
+
+    /* --- Buttons --- */
+    .form-actions { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--light-grey); }
+    .btn {
+      padding: 16px 40px; background: var(--volt); color: var(--dark); border: none;
+      font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    }
+    .btn:hover { transform: scale(1.05) skewX(-5deg); background: white; box-shadow: 0 0 20px rgba(204,255,0,0.4); }
+    .btn-outline { background: transparent; color: var(--text); border: 2px solid var(--light-grey); clip-path: none; padding: 16px 30px; }
+    .btn-outline:hover { background: var(--light-grey); transform: none; box-shadow: none; }
+    .btn:disabled { opacity: 0.5; pointer-events: none; }
+
+    /* --- Summary Step --- */
+    .summary-box { background: var(--grey); border: 1px solid var(--light-grey); padding: 30px; margin-bottom: 20px; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .sum-item label { font-size: 0.8rem; color: var(--volt); margin-bottom: 4px; }
+    .sum-item p { font-size: 1.1rem; color: var(--text); }
+
+    /* --- Responsive --- */
+    @media (max-width: 900px) {
+      .split-layout { flex-direction: column; }
+      .hype-panel { min-height: 40vh; padding: 40px 20px; }
+      .form-panel { padding: 40px 20px; }
+      .form-row { flex-direction: column; gap: 0; }
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    /* --- Print Styles --- */
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 40px; font-family: 'Inter', sans-serif; }
+      .print-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
+      .print-header h1 { font-family: 'Oswald'; font-size: 40px; margin: 0; }
+      .print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .print-label { font-size: 12px; font-weight: bold; color: #555; text-transform: uppercase; }
+      .print-val { font-size: 18px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+      .stamp { position: absolute; bottom: 40px; right: 40px; border: 4px solid #cc0000; color: #cc0000; padding: 20px; font-family: 'Oswald'; text-align: center; transform: rotate(-15deg); font-size: 24px; font-weight: bold; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html" class="back-link"><i class="fas fa-chevron-left"></i> RETURN TO HQ</a>
+    
+    <div class="logo">NEXT<span>GEN</span></div>
+  </nav>
+
+  <div class="split-layout">
+    
+    <!-- Left Hype Panel -->
+    <div class="hype-panel">
+      <div class="hype-content">
+        <div class="hype-tag">OFFICIAL RECRUITMENT</div>
+        <h1>ENTER THE<br>DRAFT.</h1>
+        <p>Your journey to professional cricket begins here. Fill out the tactical dossier accurately. Our coaching staff reviews every application.</p>
+      </div>
+    </div>
+
+    <!-- Right Form Panel -->
+    <div class="form-panel">
+      <div class="form-container">
+        
+        <div class="form-header">
+          <div class="progress-wrapper">
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="step-counter"><span id="current-step-num">1</span> / 4</div>
+          </div>
+          <h2 class="step-title" id="step-title-text">PERSONAL INTEL</h2>
+        </div>
+
+        <form id="enrollment-form">
+          
+          <!-- STEP 1: Personal Info -->
+          <div class="form-step active" data-step="1">
+            <div class="form-row">
+              <div class="form-group"><label>PLAYER FULL NAME</label><input type="text" id="fullName" class="form-input" required></div>
+              <div class="form-group"><label>DATE OF BIRTH</label><input type="date" id="dob" class="form-input" required></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>FATHER'S NAME</label><input type="text" id="fatherName" class="form-input" required></div>
+              <div class="form-group"><label>MOTHER'S NAME</label><input type="text" id="motherName" class="form-input" required></div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Contact Info -->
+          <div class="form-step" data-step="2">
+            <div class="form-row">
+              <div class="form-group"><label>EMAIL ADDRESS</label><input type="email" id="email" class="form-input" required></div>
+              <div class="form-group"><label>MOBILE NUMBER</label><input type="tel" id="phone" class="form-input" required></div>
+            </div>
+            <div class="form-group full">
+              <label>RESIDENTIAL ADDRESS</label>
+              <textarea id="address" class="form-input" rows="3" required></textarea>
+            </div>
+          </div>
+
+          <!-- STEP 3: Athletic Profile -->
+          <div class="form-step" data-step="3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>PRIMARY ROLE</label>
+                <select id="role" class="form-input" required>
+                  <option value="">Select Specialization...</option>
+                  <option value="Batsman">Batsman</option>
+                  <option value="Pace Bowler">Pace Bowler</option>
+                  <option value="Spin Bowler">Spin Bowler</option>
+                  <option value="All-Rounder">All-Rounder</option>
+                  <option value="Wicket-Keeper">Wicket-Keeper</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>BATTING STANCE</label>
+                <select id="batting" class="form-input" required>
+                  <option value="">Select...</option>
+                  <option value="Right-Handed">Right-Handed</option>
+                  <option value="Left-Handed">Left-Handed</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>PREVIOUS EXPERIENCE (YEARS)</label>
+                <input type="number" id="experience" class="form-input" min="0" required>
+              </div>
+              <div class="form-group">
+                <label>MEDICAL ALERTS (IF ANY)</label>
+                <input type="text" id="medical" class="form-input" placeholder="N/A if none">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: Documentation & Finalize -->
+          <div class="form-step" data-step="4">
+            <div class="form-row">
+              <!-- Photo Upload -->
+              <div class="form-group">
+                <label>PLAYER MUGSHOT (PHOTO)</label>
+                <div class="upload-zone" id="drop-photo">
+                  <i class="fas fa-camera"></i>
+                  <div class="upload-text">DRAG & DROP OR TAP</div>
+                  <div class="upload-sub">JPG, PNG (Max 2MB)</div>
+                  <div class="preview-wrapper" id="preview-wrap-photo">
+                    <img id="preview-photo" class="preview-img">
+                  </div>
+                  <button type="button" class="remove-file" id="remove-photo"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="file" id="input-photo" accept="image/*" style="display: none;" required>
+              </div>
+
+              <!-- Signature Upload -->
+              <div class="form-group">
+                <label>DIGITAL SIGNATURE</label>
+                <div class="upload-zone" id="drop-sig">
+                  <i class="fas fa-pen-nib"></i>
+                  <div class="upload-text">DRAG & DROP OR TAP</div>
+                  <div class="upload-sub">JPG, PNG (Max 2MB)</div>
+                  <div class="preview-wrapper" id="preview-wrap-sig">
+                    <img id="preview-sig" class="preview-img">
+                  </div>
+                  <button type="button" class="remove-file" id="remove-sig"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="file" id="input-sig" accept="image/*" style="display: none;" required>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label>EMERGENCY CONTACT (NAME & NUMBER)</label>
+              <input type="text" id="emergency" class="form-input" required>
+            </div>
+          </div>
+
+          <!-- STEP 5: Success / Summary -->
+          <div class="form-step" id="success-step" data-step="5">
+            <div style="text-align:center; margin-bottom: 30px;">
+              <i class="fas fa-check-circle" style="font-size: 60px; color: var(--volt); margin-bottom: 20px;"></i>
+              <h2 style="font-family:'Oswald'; font-size:2.5rem; color:var(--text);">DOSSIER SUBMITTED.</h2>
+              <p style="color:var(--text-muted);">Your profile has been transmitted to Academy HQ.</p>
+            </div>
+            <div class="summary-box">
+              <h3 style="margin-bottom: 20px; color:var(--volt); font-family:'Oswald'; border-bottom:1px solid var(--light-grey); padding-bottom:10px;">RECRUIT SUMMARY</h3>
+              <div class="summary-grid">
+                <div class="sum-item"><label>NAME</label><p id="sum-name">-</p></div>
+                <div class="sum-item"><label>ROLE</label><p id="sum-role">-</p></div>
+                <div class="sum-item"><label>PHONE</label><p id="sum-phone">-</p></div>
+                <div class="sum-item"><label>EXPERIENCE</label><p id="sum-exp">-</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions" id="action-buttons">
+            <button type="button" class="btn btn-outline" id="prev-btn" style="visibility: hidden;">BACK</button>
+            <button type="button" class="btn" id="next-btn">PROCEED TO NEXT <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+          </div>
+          
+          <div class="form-actions" id="success-buttons" style="display:none; justify-content:center; gap:20px;">
+             <button type="button" class="btn btn-outline" onclick="window.location.reload()"><i class="fas fa-redo"></i> NEW DRAFT</button>
+             <button type="button" class="btn" onclick="window.print()"><i class="fas fa-print"></i> PRINT ID CARD</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Print Area -->
+  <div id="print-area" style="display:none;">
+    <div class="print-header">
+      <h1>NEXTGEN ACADEMY</h1>
+      <p style="margin:5px 0 0; font-weight:bold; letter-spacing: 2px;">OFFICIAL PLAYER DOSSIER</p>
+    </div>
+    <div style="text-align:center; margin-bottom:30px;">
+      <img id="print-photo" src="" style="width:150px; height:150px; object-fit:cover; border:4px solid #000;">
+    </div>
+    <div class="print-grid">
+      <div><div class="print-label">Player Name</div><div class="print-val" id="p-name"></div></div>
+      <div><div class="print-label">Date of Birth</div><div class="print-val" id="p-dob"></div></div>
+      <div><div class="print-label">Primary Role</div><div class="print-val" id="p-role"></div></div>
+      <div><div class="print-label">Batting Style</div><div class="print-val" id="p-bat"></div></div>
+      <div><div class="print-label">Contact Number</div><div class="print-val" id="p-phone"></div></div>
+      <div><div class="print-label">Emergency Contact</div><div class="print-val" id="p-emerg"></div></div>
+    </div>
+    <div style="margin-top: 50px; text-align:center;">
+      <div class="print-label" style="margin-bottom:10px;">Digital Signature</div>
+      <img id="print-sig" src="" style="max-height:80px; border-bottom:2px solid #000; padding-bottom:5px;">
+    </div>
+    <div class="stamp">ACADEMY<br>APPROVED</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const formSteps = document.querySelectorAll('.form-step');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const progressFill = document.getElementById('progress-fill');
+      const stepNumTxt = document.getElementById('current-step-num');
+      const stepTitleTxt = document.getElementById('step-title-text');
+      const actionBtns = document.getElementById('action-buttons');
+      const successBtns = document.getElementById('success-buttons');
+      
+      let currentStep = 1;
+      const totalSteps = 4; // Step 5 is the success screen
+
+      const stepTitles = [
+        "PERSONAL INTEL",
+        "COMMS & COORDS",
+        "ATHLETIC PROFILE",
+        "DOCUMENTATION"
+      ];
+
+      function updateUI() {
+        // Handle Step Visibility
+        formSteps.forEach(step => step.classList.remove('active'));
+        document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.add('active');
+
+        if (currentStep <= totalSteps) {
+          // Update Progress
+          const progress = ((currentStep) / totalSteps) * 100;
+          progressFill.style.width = `${progress}%`;
+          stepNumTxt.textContent = currentStep;
+          stepTitleTxt.textContent = stepTitles[currentStep - 1];
+
+          // Update Buttons
+          prevBtn.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+          
+          if (currentStep === totalSteps) {
+            nextBtn.innerHTML = 'TRANSMIT DATA <i class="fas fa-upload" style="margin-left: 10px;"></i>';
+          } else {
+            nextBtn.innerHTML = 'PROCEED TO NEXT <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>';
+          }
+        } else {
+          // Success Screen (Step 5)
+          document.querySelector('.form-header').style.display = 'none';
+          actionBtns.style.display = 'none';
+          successBtns.style.display = 'flex';
+          populateSummary();
+        }
+      }
+
+      function validateStep() {
+        const currentInputs = formSteps[currentStep - 1].querySelectorAll('[required]');
+        let valid = true;
+        currentInputs.forEach(input => {
+          input.classList.remove('input-error');
+          if (!input.value.trim() && input.type !== 'file') {
+            valid = false;
+            input.classList.add('input-error');
+          } else if (input.type === 'file' && !input.files.length) {
+            valid = false;
+            input.parentElement.querySelector('.upload-zone').classList.add('input-error');
+            setTimeout(() => input.parentElement.querySelector('.upload-zone').classList.remove('input-error'), 400);
+          }
+        });
+        return valid;
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (validateStep()) {
+          if (currentStep < totalSteps) {
+            currentStep++;
+            updateUI();
+          } else {
+            // Simulate Backend Submission
+            const originalText = nextBtn.innerHTML;
+            nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENCRYPTING...';
+            nextBtn.disabled = true;
+
+            setTimeout(() => {
+              currentStep++; // Move to success step
+              updateUI();
+            }, 1500);
+          }
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentStep > 1) {
+          currentStep--;
+          updateUI();
+        }
+      });
+
+      // --- Drag and Drop File Upload Logic ---
+      function setupUploadZone(zoneId, inputId, wrapId, imgId, removeId) {
+        const zone = document.getElementById(zoneId);
+        const input = document.getElementById(inputId);
+        const wrap = document.getElementById(wrapId);
+        const img = document.getElementById(imgId);
+        const remove = document.getElementById(removeId);
+
+        // Click to upload
+        zone.addEventListener('click', (e) => {
+          if(e.target !== remove && e.target !== remove.querySelector('i')) {
+            input.click();
+          }
+        });
+
+        // Drag events
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('dragover');
+          if (e.dataTransfer.files.length) {
+            input.files = e.dataTransfer.files;
+            handleFile(input.files[0]);
+          }
+        });
+
+        // Input change event
+        input.addEventListener('change', () => {
+          if(input.files.length) handleFile(input.files[0]);
+        });
+
+        function handleFile(file) {
+          if (file.size > 2 * 1024 * 1024) { alert("File exceeds 2MB limit."); input.value = ""; return; }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            img.src = e.target.result;
+            wrap.style.display = 'flex';
+            remove.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+
+        remove.addEventListener('click', (e) => {
+          e.stopPropagation();
+          input.value = "";
+          img.src = "";
+          wrap.style.display = 'none';
+          remove.style.display = 'none';
+        });
+      }
+
+      setupUploadZone('drop-photo', 'input-photo', 'preview-wrap-photo', 'preview-photo', 'remove-photo');
+      setupUploadZone('drop-sig', 'input-sig', 'preview-wrap-sig', 'preview-sig', 'remove-sig');
+
+      // --- Summary and Print Population ---
+      function populateSummary() {
+        const val = id => document.getElementById(id).value;
+        
+        // UI Summary
+        document.getElementById('sum-name').textContent = val('fullName');
+        document.getElementById('sum-role').textContent = val('role');
+        document.getElementById('sum-phone').textContent = val('phone');
+        document.getElementById('sum-exp').textContent = val('experience') + " Yrs";
+
+        // Print Template
+        document.getElementById('p-name').textContent = val('fullName');
+        document.getElementById('p-dob').textContent = val('dob');
+        document.getElementById('p-role').textContent = val('role');
+        document.getElementById('p-bat').textContent = val('batting');
+        document.getElementById('p-phone').textContent = val('phone');
+        document.getElementById('p-emerg').textContent = val('emergency');
+        
+        document.getElementById('print-photo').src = document.getElementById('preview-photo').src;
+        document.getElementById('print-sig').src = document.getElementById('preview-sig').src;
+      }
+
+    });
+  </script>
+</body>
+</html>

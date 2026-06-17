@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextGen Cricket Academy | Elite Training</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Aggressive Sports Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --volt: #ccff00; /* High-Energy Gen Z Sports Yellow */
+      --dark: #050505;
+      --grey: #141414;
+      --light-grey: #2a2a2a;
+      --text: #ffffff;
+      --text-muted: #888888;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      background-color: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- Typography --- */
+    h1, h2, h3, .nav-links a, .btn, .stamp-main {
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(4rem, 10vw, 8rem);
+      line-height: 0.9;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+    }
+
+    .text-outline {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--text);
+    }
+
+    h2 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 1;
+      margin-bottom: 30px;
+      color: var(--text);
+    }
+
+    .text-volt { color: var(--volt); }
+
+    p { font-size: 1.1rem; line-height: 1.6; color: var(--text-muted); }
+
+    /* --- Navigation --- */
+    nav {
+      position: fixed;
+      top: 0; width: 100%; z-index: 1000;
+      background: rgba(5, 5, 5, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--light-grey);
+      padding: 20px 0;
+      transition: all 0.3s;
+    }
+
+    .nav-container {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 40px;
+    }
+
+    .logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px; font-weight: 700; color: var(--text);
+      text-decoration: none; letter-spacing: 1px;
+    }
+    .logo span { color: var(--volt); }
+
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      color: var(--text); text-decoration: none; font-size: 1.1rem;
+      font-weight: 500; letter-spacing: 1px; transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--volt); }
+    
+    .menu-toggle {
+      display: none; background: none; border: none;
+      color: var(--text); font-size: 24px; cursor: pointer;
+    }
+
+    /* --- Slanted Premium Buttons --- */
+    .btn {
+      display: inline-block;
+      padding: 18px 40px;
+      background-color: var(--volt);
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+      transition: all 0.3s ease;
+      border: none; cursor: pointer;
+      box-shadow: 0 0 20px rgba(204, 255, 0, 0);
+    }
+
+    .btn:hover {
+      transform: scale(1.05) skewX(-5deg);
+      background-color: #fff;
+      box-shadow: 0 0 30px rgba(204, 255, 0, 0.4);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--volt);
+      position: relative;
+    }
+    .btn-outline::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--volt); z-index: -1; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+      transform: scale(1.05); transition: all 0.3s;
+    }
+    .btn-outline::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--dark); z-index: -1; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    }
+    .btn-outline:hover { color: var(--dark); }
+    .btn-outline:hover::after { background: var(--volt); }
+
+    /* --- Sections --- */
+    .section {
+      min-height: 100vh;
+      padding: 120px 40px;
+      display: none;
+      opacity: 0;
+    }
+    .section.active {
+      display: block;
+      animation: slideIn 0.5s forwards ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 2; }
+
+    /* --- Hero Section --- */
+    
+     /* --- Hero Section --- */
+    #home {
+      display: none; 
+      /* Paste your chosen background line here */
+      background: linear-gradient(90deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.6) 100%), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
+      position: relative;
+      align-items: center;
+    }
+    
+    #home.active { display: flex; }
+    
+    #home::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(90deg, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.4) 100%);
+      z-index: 1;
+    }
+
+    .hero-content { max-width: 800px; }
+    .hero-tag {
+      display: inline-block; background: var(--volt); color: var(--dark);
+      padding: 5px 15px; font-weight: 700; font-family: 'Oswald';
+      margin-bottom: 20px; letter-spacing: 2px;
+    }
+
+    /* --- Bold Grid Layouts --- */
+    .sports-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .sports-card {
+      background: var(--grey);
+      padding: 50px 40px;
+      border-top: 5px solid var(--volt);
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .sports-card:hover { transform: translateY(-10px); }
+    .sports-card h3 { font-size: 2rem; color: var(--text); margin-bottom: 15px; }
+    .sports-card ul { list-style: none; color: var(--text-muted); margin-top: 20px; }
+    .sports-card li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+    .sports-card li i { color: var(--volt); }
+
+    /* Coach Specific Card */
+    .coach-card {
+      border: 1px solid var(--light-grey); border-top: none;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .coach-image {
+      width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
+      border: 4px solid var(--volt); margin-bottom: 20px;
+    }
+    .coach-role { color: var(--volt); font-family: 'Oswald'; letter-spacing: 1px; margin-bottom: 15px; }
+
+    /* --- Streetwear Style Pay & Play Banner --- */
+    .hype-banner {
+      background: var(--volt);
+      color: var(--dark);
+      padding: 60px 40px;
+      margin-top: 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+    }
+    .hype-banner h2 { color: var(--dark); margin-bottom: 10px; }
+    .hype-banner p { color: #111; font-weight: 500; font-size: 1.3rem; max-width: 800px; margin: 0 auto 30px; }
+    .marquee {
+      position: absolute; top: 10px; left: 0; width: 100%; white-space: nowrap;
+      font-family: 'Oswald'; font-size: 4rem; opacity: 0.1; font-weight: 700;
+      animation: scroll 20s linear infinite; pointer-events: none;
+    }
+    @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* --- Tactical Form Design --- */
+    .tactical-form {
+      background: var(--grey);
+      border: 1px solid var(--light-grey);
+      padding: 60px;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .tactical-form::before {
+      content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+      width: 50%; height: 4px; background: var(--volt);
+    }
+
+    .form-step { display: none; }
+    .form-step.active { display: block; animation: slideIn 0.4s ease; }
+    
+    .form-row { display: flex; gap: 30px; margin-bottom: 30px; }
+    @media (max-width: 768px) { .form-row { flex-direction: column; gap: 20px; } }
+    .form-group { flex: 1; }
+    .form-group.full { flex: 0 0 100%; }
+
+    label { display: block; margin-bottom: 10px; font-family: 'Oswald'; font-size: 1.2rem; letter-spacing: 1px; color: var(--text); }
+    .form-input {
+      width: 100%; padding: 18px 20px; background: var(--dark); border: 2px solid var(--light-grey);
+      color: var(--text); font-family: 'Inter'; font-size: 1.1rem; transition: all 0.3s;
+    }
+    .form-input:focus { outline: none; border-color: var(--volt); }
+    .input-error { border-color: #ff3333 !important; }
+
+    .upload-zone {
+      border: 2px dashed var(--light-grey); padding: 40px; text-align: center;
+      background: var(--dark); cursor: pointer; transition: 0.3s;
+    }
+    .upload-zone:hover { border-color: var(--volt); }
+    .upload-zone i { font-size: 40px; color: var(--volt); margin-bottom: 15px; }
+    .preview-img { max-width: 200px; display: none; margin: 15px auto 0; border: 2px solid var(--volt); }
+
+    .step-indicator { display: flex; gap: 10px; margin-bottom: 40px; }
+    .step-dot { flex: 1; height: 6px; background: var(--light-grey); transition: 0.3s; }
+    .step-dot.active { background: var(--volt); box-shadow: 0 0 10px var(--volt); }
+
+    /* --- WhatsApp Floating Action --- */
+    #wa-launcher {
+      position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px;
+      background: var(--volt); color: var(--dark); border-radius: 50%;
+      display: flex; justify-content: center; align-items: center; font-size: 35px;
+      cursor: pointer; z-index: 1001; transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(204, 255, 0, 0.3);
+    }
+    #wa-launcher:hover { transform: scale(1.1) rotate(10deg); }
+#wa-panel {
+      position: fixed; 
+      bottom: 120px; /* Slightly lower to give more top room */
+      right: 40px; 
+      width: 380px; 
+      height: 600px; /* Ideal height for desktop */
+      max-height: calc(100vh - 140px); /* CRITICAL FIX: Never lets it grow taller than the screen */
+      background: var(--grey); 
+      border: 1px solid var(--light-grey);
+      border-radius: 16px; /* Smooth, modern corners */
+      display: flex; 
+      flex-direction: column; 
+      z-index: 1000;
+      transform: translateY(20px); 
+      opacity: 0; 
+      pointer-events: none; 
+      transition: all 0.3s;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8); /* Better pop off the background */
+    }
+    #wa-panel.active { transform: translateY(0); opacity: 1; pointer-events: all; }
+    
+    .wa-head { background: var(--dark); padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--volt); font-family: 'Oswald'; font-size: 1.2rem;}
+    .wa-close { background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; }
+    .wa-body { flex: 1; padding: 20px; overflow-y: auto; background: var(--dark); }
+    .msg { padding: 15px; margin-bottom: 15px; font-size: 0.95rem; max-width: 85%; }
+    .msg.bot { background: var(--grey); border-left: 3px solid var(--volt); align-self: flex-start; }
+    .msg.user { background: var(--volt); color: var(--dark); font-weight: 600; align-self: flex-end; margin-left: auto; }
+    .wa-foot { padding: 20px; background: var(--grey); display: flex; gap: 10px; }
+    .wa-input { flex: 1; background: var(--dark); border: 1px solid var(--light-grey); color: white; padding: 15px; outline: none; }
+    .wa-send { background: var(--volt); border: none; color: var(--dark); width: 50px; cursor: pointer; font-size: 1.2rem; }
+/* Mobile Nav & Responsive Fixes */
+    @media (max-width: 900px) {
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--dark); flex-direction: column; padding: 30px; border-bottom: 2px solid var(--volt); }
+      .nav-links.active { display: flex; }
+      .menu-toggle { display: block; }
+      h1 { font-size: 3.5rem; }
+      
+      /* Mobile Chat Bot Fix */
+      #wa-launcher {
+        bottom: 20px; 
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+      }
+      #wa-panel { 
+        width: calc(100vw - 40px); /* 20px margin on each side */
+        right: 20px; 
+        bottom: 90px; /* Snugs it closer to the bottom on phones */
+        max-height: calc(100vh - 110px); /* Keeps it fully on screen */
+      }
+    }
+    /* --- Footer & Misc --- */
+    footer {
+      background: #000; padding: 60px 40px; border-top: 1px solid var(--light-grey);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px;
+    }
+    .footer-brand h2 { font-size: 2rem; margin-bottom: 10px; }
+
+    /* Admin Styles */
+    .admin-auth { background: var(--grey); padding: 50px; max-width: 400px; margin: 0 auto; text-align: center; border: 1px solid var(--light-grey); }
+
+    /* Mobile Nav */
+    @media (max-width: 900px) {
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--dark); flex-direction: column; padding: 30px; border-bottom: 2px solid var(--volt); }
+      .nav-links.active { display: flex; }
+      .menu-toggle { display: block; }
+      h1 { font-size: 3.5rem; }
+      #wa-panel { width: calc(100vw - 40px); right: 20px; }
+    }
+
+    /* Print Setup */
+    @media print {
+      body * { visibility: hidden; }
+      .printable-submission, .printable-submission * { visibility: visible; }
+      .printable-submission { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 40px; }
+      nav, footer, #wa-launcher, .btn { display: none !important; }
+    }
+    .printable-submission { display: none; background: white; color: black; max-width: 800px; margin: 0 auto; border: 2px solid black; position: relative;}
+    #copy {
+  text-align: center;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;
+  #copy {
+  text-align: center;
+  padding: 30px;
+  background: #000;
+  color: #888888; /* Muted text color */
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px; /* Gives it that cinematic look */
+  border-top: 1px solid #2a2a2a;
+}
+
+#copy span {
+  color: #ccff00; /* Optional: Makes a specific word pop in Volt yellow */
+}
+}
+/* --- Advanced Comms Terminal CSS --- */
+    .status-dot { width: 8px; height: 8px; background: var(--volt); border-radius: 50%; box-shadow: 0 0 8px var(--volt); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    .msg-wrapper { display: flex; flex-direction: column; margin-bottom: 15px; max-width: 85%; animation: slideInChat 0.3s ease-out; }
+    .msg-wrapper.bot { align-self: flex-start; }
+    .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
+    @keyframes slideInChat { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .msg { padding: 12px 16px; font-size: 0.95rem; line-height: 1.4; position: relative; max-width: 100%; border-radius: 8px; }
+    .msg.bot { background: var(--grey); border-left: 3px solid var(--volt); color: var(--text); border-top-left-radius: 0; }
+    .msg.user { background: var(--volt); color: var(--dark); font-weight: 600; border-top-right-radius: 0; }
+    
+    .msg-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; font-family: 'Oswald'; letter-spacing: 1px; }
+
+    /* Quick Reply Chips */
+    .quick-replies { display: flex; gap: 8px; padding: 10px 20px; overflow-x: auto; background: var(--dark); border-top: 1px solid var(--light-grey); scrollbar-width: none; }
+    .quick-replies::-webkit-scrollbar { display: none; }
+    .qr-chip { background: transparent; border: 1px solid var(--volt); color: var(--volt); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; transition: 0.2s; font-family: 'Inter'; font-weight: 500; }
+    .qr-chip:hover { background: var(--volt); color: var(--dark); }
+
+    /* Typing Indicator */
+    .typing-indicator { display: flex; gap: 4px; padding: 12px 16px; background: var(--grey); border-left: 3px solid var(--volt); width: fit-content; border-radius: 8px; border-top-left-radius: 0; margin-bottom: 15px; }
+    .typing-dot { width: 6px; height: 6px; background: var(--volt); border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+  </style>
+</head>
+
+<body>
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-container">
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active">HOME</a></li>
+        <li><a href="#about" class="nav-link">SQUAD</a></li>
+        <li><a href="#programs" class="nav-link">TRAINING</a></li>
+        <li><a href="#facilities" class="nav-link">ARSENAL</a></li>
+        <!-- Connected to your new pages -->
+        <li><a href="enroll.html" class="nav-link">ENROLL</a></li>
+       
+      </ul>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- HOME / HERO -->
+  <section id="home" class="section active">
+    <div class="container hero-content">
+      <div class="hero-tag">ELITE CRICKET DEVELOPMENT</div>
+      <h1 class="text-outline">DOMINATE</h1>
+      <h1>THE PITCH.</h1>
+      <p style="font-size: 1.3rem; margin-bottom: 40px; color: #ddd; max-width: 600px;">
+        State-of-the-art facilities and professional coaching based in Baner & Mahalunge, Pune. Your legacy starts here.
+      </p>
+     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <!-- Changed href from #enrollment to enroll.html -->
+        <a href="enroll.html" class="btn">JOIN THE ACADEMY</a>
+        <a href="#programs" class="btn btn-outline nav-link">VIEW PROGRAMS</a>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / COACHES -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2>TRAIN WITH <span class="text-volt">THE BEST</span></h2>
+      <p style="max-width: 700px;">Our coaching staff brings years of professional experience, focusing on elite biomechanics, relentless conditioning, and tactical superiority.</p>
+      
+      <div class="sports-grid">
+        <div class="sports-card coach-card">
+          <img src="" class="coach-image" alt="">
+          <h3></h3>
+          <div class="coach-role">HEAD COACH & FOUNDER</div>
+          <p>Specializing in elite strength and conditioning. Architect of the NextGen performance culture.</p>
+        </div>
+        
+        <div class="sports-card coach-card">
+          <img src="" class="coach-image" alt="">
+          <h3></h3>
+          <div class="coach-role">ASSISTANT COACH</div>
+          <p>Master of functional fitness, mobility, and technical refinement. Maximizing athletic output on the field.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS & PAY/PLAY -->
+  <section id="programs" class="section">
+    <div class="container">
+      <h2>ELITE <span class="text-volt">PATHWAYS</span></h2>
+      <div class="sports-grid">
+        <div class="sports-card">
+          <h1 style="color: var(--light-grey); position:absolute; top:-20px; right: 10px; font-size: 8rem; z-index:0;">01</h1>
+          <div style="position:relative; z-index:1;">
+            <h3>JUNIOR CHAMPS <span style="font-size: 1.2rem; color: var(--volt);">[U-14]</span></h3>
+            <ul>
+              <li><i class="fas fa-bolt"></i> Fundamental Technique</li>
+              <li><i class="fas fa-bolt"></i> Agility & Motor Skills</li>
+              <li><i class="fas fa-bolt"></i> Match Simulation Basics</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="sports-card">
+          <h1 style="color: var(--light-grey); position:absolute; top:-20px; right: 10px; font-size: 8rem; z-index:0;">02</h1>
+          <div style="position:relative; z-index:1;">
+            <h3>PRODIGY <span style="font-size: 1.2rem; color: var(--volt);">[U-19]</span></h3>
+            <ul>
+              <li><i class="fas fa-bolt"></i> Advanced Biomechanics</li>
+              <li><i class="fas fa-bolt"></i> High-Intensity Conditioning</li>
+              <li><i class="fas fa-bolt"></i> Tournament Strategy</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="sports-card">
+          <h1 style="color: var(--light-grey); position:absolute; top:-20px; right: 10px; font-size: 8rem; z-index:0;">03</h1>
+          <div style="position:relative; z-index:1;">
+            <h3>SENIOR PRO <span style="font-size: 1.2rem; color: var(--volt);">[ELITE]</span></h3>
+            <ul>
+              <li><i class="fas fa-bolt"></i> Professional Match Scenarios</li>
+              <li><i class="fas fa-bolt"></i> Data-Driven Analytics</li>
+              <li><i class="fas fa-bolt"></i> Sports Psychology</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hype Banner for Pay & Play -->
+      <div class="hype-banner">
+        <div class="marquee">NEXTGEN CRICKET OPEN NETS NEXTGEN CRICKET OPEN NETS</div>
+        <h2 style="position:relative; z-index:2;">LOCKED OUT? <span style="color:#fff;">GET IN THE NETS.</span></h2>
+        <p style="position:relative; z-index:2;">Exclusive Pay & Play access now open at our Mahalunge facility. Standard nets or Sidearm Specialists available.</p>
+        <a href="https://wa.me/?text=Hi%2C%20I%20would%20like%20to%20book%20a%20practice%20session" target="_blank" class="btn" style="background:#000; color:var(--volt); position:relative; z-index:2;">SECURE YOUR SLOT</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FACILITIES -->
+  <section id="facilities" class="section">
+    <div class="container">
+      <h2>THE <span class="text-volt">ARSENAL</span></h2>
+      <p style="max-width: 700px; margin-bottom: 50px;">Pro-grade infrastructure designed to forge champions. No excuses.</p>
+      
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div class="sports-card" style="display:flex; flex-wrap:wrap; align-items:center; gap:40px;">
+          <h1 style="color:var(--volt); margin:0;">PITCHES</h1>
+          <p style="flex:1; margin:0; color:#fff; font-size:1.2rem;">6 All-Weather Indoor Nets &bull; 8 Turf Wickets &bull; Astro-Turf & Matting</p>
+        </div>
+        <div class="sports-card" style="display:flex; flex-wrap:wrap; align-items:center; gap:40px;">
+          <h1 style="color:var(--volt); margin:0;">TECH</h1>
+          <p style="flex:1; margin:0; color:#fff; font-size:1.2rem;">HD Video Analysis &bull; Programmable Bowling Machines &bull; Radar Speed Guns</p>
+        </div>
+        <div class="sports-card" style="display:flex; flex-wrap:wrap; align-items:center; gap:40px;">
+          <h1 style="color:var(--volt); margin:0;">FITNESS</h1>
+          <p style="flex:1; margin:0; color:#fff; font-size:1.2rem;">Full S&C Center &bull; In-House Physiotherapist &bull; Dedicated Recovery Zone</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REDIRECT TO ENROLLMENT PORTAL -->
+  <section id="enrollment" class="section">
+    <div class="container" style="text-align: center;">
+      <div class="tactical-form" style="padding: 80px 40px;">
+        <h2 style="font-size: 4rem; margin-bottom: 20px;">READY TO <span class="text-volt">DRAFT?</span></h2>
+        <p style="font-size: 1.3rem; max-width: 600px; margin: 0 auto 40px;">
+          Our enrollment process has moved to a dedicated, secure recruitment portal. Submit your dossier and athletic profile to get started.
+        </p>
+        <a href="enroll.html" class="btn" style="font-size: 1.5rem; padding: 20px 50px;">
+          ENTER THE DRAFT PORTAL <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <h2>NEXT<span class="text-volt">GEN</span></h2>
+      <p style="color:#fff;"><br></p>
+      <a href="terms.html">Terms & Conditions</a>.
+    </div>
+    <div style="text-align: right;">
+      <h3 style="color:var(--volt); margin-bottom:10px;">CONTACT OPS</h3>
+      <p style="color:#fff;"></p>
+      <p style="color:#fff;"></p>
+      
+    </div>
+  </footer>
+<footer id="copy"><p style="margin-top:20px;">&copy; 2026 NEXTGEN ACADEMY. FORGING CHAMPIONS. ALL RIGHTS RESERVED..</p></footer>
+  <!-- Print Layout -->
+  <div class="printable-submission" id="printable-submission">
+    <div style="text-align:center; border-bottom: 4px solid #000; padding-bottom: 20px; margin-bottom: 30px;">
+      <h1 style="font-family:'Oswald'; margin:0; font-size:40px;">NEXTGEN ACADEMY</h1>
+      <h3 style="font-family:'Oswald'; margin:5px 0 0;">OFFICIAL DRAFT REGISTRATION</h3>
+    </div>
+    <div id="print-details" style="font-family:'Inter'; display:grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 18px;"></div>
+    <div style="position:absolute; bottom: 50px; right: 50px; border: 4px solid #000; padding: 20px; text-align:center; transform: rotate(-10deg);">
+      <h2 style="margin:0; font-family:'Oswald';">APPROVED</h2>
+      <p style="margin:0; font-weight:bold;"></p>
+    </div>
+  </div>
+
+ <!-- ADVANCED WHATSAPP COMMS TERMINAL -->
+  <div id="wa-launcher"><i class="fab fa-whatsapp"></i></div>
+  <div id="wa-panel">
+    <div class="wa-head">
+      <div>
+        <span style="font-size: 1.2rem; display: block;">NEXTGEN COMMS</span>
+        <span style="font-size: 0.7rem; color: var(--volt); letter-spacing: 1px; display: flex; align-items: center; gap: 5px;">
+          <span class="status-dot"></span> SYSTEM ONLINE
+        </span>
+      </div>
+      <button class="wa-close" id="wa-close">&times;</button>
+    </div>
+    
+    <div class="wa-body" id="wa-body">
+      <!-- Chat messages will be injected here -->
+    </div>
+
+    <!-- Quick Replies Container -->
+    <div class="quick-replies" id="quick-replies"></div>
+
+    <div class="wa-foot">
+      <input type="text" id="wa-input" class="wa-input" placeholder="Transmit message..." autocomplete="off">
+      <button id="wa-send" class="wa-send"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Navigation & Sections
+      const sections = document.querySelectorAll('.section');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      function showSection(id) {
+        const targetSection = document.getElementById(id);
+        
+        // Safety check: If the section doesn't exist, stop here to prevent crashes
+        if (!targetSection) return; 
+
+        sections.forEach(s => s.classList.remove('active'));
+        targetSection.classList.add('active');
+        
+        navLinks.forEach(l => {
+          l.classList.remove('active');
+          if(l.getAttribute('href') === `#${id}`) l.classList.add('active');
+        });
+        
+        window.scrollTo(0,0);
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          
+          // ONLY intercept links that start with '#' (scrolling links)
+          // Let normal links (like enroll.html) work normally!
+          if (href.startsWith('#')) {
+            e.preventDefault();
+            showSection(href.substring(1));
+            
+            // Close mobile menu if open
+            if(window.innerWidth <= 900) {
+              document.getElementById('navLinks').classList.remove('active');
+            }
+          }
+        });
+      });
+
+      // Mobile Menu Toggle
+      const menuToggle = document.getElementById('menuToggle');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+          document.getElementById('navLinks').classList.toggle('active');
+        });
+      }
+// ==========================================
+      // ADVANCED NEXTGEN COMMS (SMART BOT)
+      // ==========================================
+      const waPanel = document.getElementById('wa-panel');
+      const waLauncher = document.getElementById('wa-launcher');
+      const waClose = document.getElementById('wa-close');
+      const waInput = document.getElementById('wa-input');
+      const waSend = document.getElementById('wa-send');
+      const waBody = document.getElementById('wa-body');
+      const quickRepliesContainer = document.getElementById('quick-replies');
+
+      const ACADEMY_PHONE = "917385713737"; // Change to exact WhatsApp number
+
+      // Toggle Panel
+      if (waLauncher && waPanel && waClose) {
+        waLauncher.addEventListener('click', () => {
+            waPanel.classList.toggle('active');
+            if (waBody.children.length === 0) initBot(); // Start bot on first open
+        });
+        waClose.addEventListener('click', () => waPanel.classList.remove('active'));
+      }
+
+      // --- Bot Intelligence Engine ---
+      const botKnowledge = [
+        {
+          keywords: /(fee|cost|price|pay|package|charges)/i,
+          response: "Elite training requires investment. Our programs are tailored based on age and skill level. For exact pricing, I can connect you directly with Coach Pravin.",
+          chips: ["Connect to Coach", "View Programs"]
+        },
+        {
+          keywords: /(where|location|address|map|place)/i,
+          response: "HQ Location: NextGen Cricket Academy, . Drop by for a facility tour.",
+          chips: ["Book a Visit", "Main Menu"]
+        },
+        {
+          keywords: /(time|hour|schedule|when|open|close)/i,
+          response: "Operational Hours:\nMorning Squad: 6:00 AM - 9:00 AM\nEvening Squad: 4:00 PM - 7:00 PM.",
+          chips: ["Join a Squad", "Book Open Nets"]
+        },
+        {
+          keywords: /(book|net|play|practice|slot)/i,
+          response: "Ready to grind? Pay & Play nets are available weekdays from 9 AM to 4 PM. I'll hand you over to dispatch to secure your slot.",
+          chips: ["Confirm Net Booking"]
+        },
+        {
+          keywords: /(coach|||staff|trainer)/i,
+          response: "Our elite coaching staff is led by Head Coach  (S&C Expert) and Assistant Coach  (Technical/Mobility).",
+          chips: ["Main Menu"]
+        }
+      ];
+
+      function initBot() {
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          appendMessage("bot", "System Online. I am the NextGen Virtual Assistant. How can I help you dominate the pitch today?");
+          setQuickReplies(["Book Nets", "Academy Fees", "Location", "Talk to Human"]);
+        }, 800);
+      }
+
+      function appendMessage(sender, text) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const alignClass = sender === 'bot' ? 'bot' : 'user';
+        
+        // Format text to handle line breaks
+        const formattedText = text.replace(/\n/g, '<br>');
+
+        const msgHTML = `
+          <div class="msg-wrapper ${alignClass}">
+            <div class="msg ${alignClass}">${formattedText}</div>
+            <div class="msg-time">${time}</div>
+          </div>
+        `;
+        waBody.insertAdjacentHTML('beforeend', msgHTML);
+        waBody.scrollTop = waBody.scrollHeight;
+      }
+
+      function showTyping() {
+        const typingHTML = `
+          <div class="typing-indicator" id="typing-bubble">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+          </div>`;
+        waBody.insertAdjacentHTML('beforeend', typingHTML);
+        waBody.scrollTop = waBody.scrollHeight;
+      }
+
+      function removeTyping() {
+        const bubble = document.getElementById('typing-bubble');
+        if (bubble) bubble.remove();
+      }
+
+      function setQuickReplies(chips) {
+        quickRepliesContainer.innerHTML = '';
+        chips.forEach(chip => {
+          const btn = document.createElement('button');
+          btn.className = 'qr-chip';
+          btn.innerText = chip;
+          btn.onclick = () => handleUserInput(chip);
+          quickRepliesContainer.appendChild(btn);
+        });
+      }
+
+      function handoffToHuman(intentContext) {
+        appendMessage("bot", "Rerouting secure channel to human dispatch...");
+        setTimeout(() => {
+          const text = encodeURIComponent(`HQ, I need assistance regarding: ${intentContext}`);
+          window.open(`https://wa.me/${ACADEMY_PHONE}?text=${text}`, '_blank');
+        }, 1200);
+      }
+
+      function processBotResponse(userInput) {
+        showTyping();
+        setQuickReplies([]); // clear chips while thinking
+        
+        setTimeout(() => {
+          removeTyping();
+          let matched = false;
+
+          // 1. Check specific handoff requests
+          if (/(human|coach|connect|confirm net booking|book a visit|join a squad)/i.test(userInput)) {
+             handoffToHuman(userInput);
+             setQuickReplies(["Main Menu"]);
+             return;
+          }
+
+          // 2. Check general routing
+          if (/(main menu|hi|hello|hey|start)/i.test(userInput)) {
+             appendMessage("bot", "Main menu loaded. What's your objective?");
+             setQuickReplies(["Book Nets", "Academy Fees", "Location", "Talk to Human"]);
+             return;
+          }
+
+          // 3. Check Bot Knowledge Base
+          for (const intent of botKnowledge) {
+            if (intent.keywords.test(userInput)) {
+              appendMessage("bot", intent.response);
+              setQuickReplies(intent.chips);
+              matched = true;
+              break;
+            }
+          }
+
+          // 4. Fallback (If it doesn't understand)
+          if (!matched) {
+            appendMessage("bot", "Data not found in local databanks. Would you like to connect directly with the coaching staff to answer this?");
+            setQuickReplies(["Talk to Human", "Main Menu"]);
+          }
+        }, 1000 + Math.random() * 500); // Random delay between 1-1.5s for realism
+      }
+
+      function handleUserInput(text = null) {
+        const inputVal = text || waInput.value.trim();
+        if (!inputVal) return;
+
+        // Display user message
+        appendMessage("user", inputVal);
+        waInput.value = '';
+        quickRepliesContainer.innerHTML = ''; // Hide chips when user types
+
+        // Process response
+        processBotResponse(inputVal);
+      }
+
+      // Event Listeners
+      if (waSend && waInput) {
+        waSend.addEventListener('click', () => handleUserInput());
+        waInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserInput(); });
+      }
+
+      // Initialize default view
+      showSection('home');
+    });
+  </script>
+</body>
+</html>
